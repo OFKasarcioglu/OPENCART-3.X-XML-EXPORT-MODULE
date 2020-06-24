@@ -1,0 +1,219 @@
+{{ header }}
+{{ column_left }}
+<div id="content">
+  <style type="text/css">
+    #xml_export tr td input[type=checkbox] {float: left;cursor: pointer;}
+    #xml_export label {font-weight: normal;line-height: 13px;padding: 7px 0px 0px 7px;cursor: pointer;}
+    #xml_export label.highlighted {color: #1e91cf;}
+    #xml_export h4 {font-size: 18px; margin: 0px 0px 10px 0px; padding: 0px 0px 0px 0px;}
+    .export-line {height: 1px;width: 100%;margin: 10px 0px;border-bottom: 1px dotted #dedede;}
+    #xml_export_product-copyright {color: #333; display: block; text-align: center;}
+  </style>
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ text_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <form action="{{ actual_url }}" method="post" id="xml_export">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-check"></i> {{ text_export_items }}</h3>
+            </div>
+            <div class="panel-body" id="items">
+              {% if items %}
+                {% for index, item in items %}
+                <div class="col-md-3">
+                  <input type="checkbox" name="download[{{ index }}]" id="download_{{ index }}" value="1" />
+                  <label for="download_{{ index }}">{{ item }}</label>
+                </div>
+                {% endfor %}
+              {% endif %}
+
+            </div>
+          </div>
+              
+          <div class="panel panel-default">
+            <div class="panel-body" id="items">
+              <div class="cron-link">
+                <b>{{ text_cron_link }}</b>: <a href="{{ cron_link }}" target="_blank">{{ cron_link }}</a>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="export-line"></div>
+          <p style="display: block; text-align: center;"><a href="https://kasarcioglu.com" target="_blank"> Ömer Faruk KASARCIOĞLU |  Yardım & Destek </a></p>
+
+        </div>
+        <div class="col-md-4">
+  
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-filter"></i> {{ text_export_filter }}</h3>
+            </div>
+            <div class="panel-body">
+        
+              <h4>{{ text_checked }}:</h4>
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td><input type="radio" name="checked" value="check_main_data" id="check_main_data" onClick="check(this.value);" /></td>
+                  <td><label for="check_main_data">{{ text_check_main_data }}</label></td>
+                </tr>
+                <tr>
+                  <td><input type="radio" name="checked" value="check_all_important_data" id="check_all_important_data" onClick="check(this.value);" /></td>
+                  <td><label for="check_all_important_data">{{ text_check_all_important_data }}</label></td>
+                </tr>
+                <tr>
+                  <td><input type="radio" name="checked" value="check_all" id="check_all" onClick="check(this.value);" /></td>
+                  <td><label for="check_all">{{ text_check_all }}</label></td>
+                </tr>
+                <tr>
+                  <td><input type="radio" name="checked" value="check_none" id="check_none" onClick="check(this.value);" /></td>
+                  <td><label for="check_none">{{ text_check_none }}</label></td>
+                </tr>
+              </table>
+              
+              <div class="export-line"></div>
+              
+              <h4>{{ text_select_language }}:</h4>
+              <select name="language_id" class="form-control">
+                {% if languages %}
+                {% for language in languages %}
+                  <option value="{{ language.language_id }}">{{ language.name }}</option>
+                {% endfor %}
+                {% endif %}
+              </select>
+              
+              <div class="export-line"></div>
+              
+              <h4>{{ text_another_options }}:</h4>
+              <input type="checkbox" name="download[full_image_link]" id="download_full_image_link" value="1" checked="checked" />
+              <label for="download_full_image_link">{{ text_full_image_link }}</label>
+              <br />
+              <input type="checkbox" name="download[download_image_number]" id="download_image_number" value="1" checked="checked" />
+              <label for="download_image_number">{{ text_download_image_number }}</label>
+  
+             
+              <div class="export-line"></div>
+              <button type="submit" form="xml_export" class="btn btn-primary"><i class="fa fa-save"></i> {{ text_download_xml }}</button>
+       
+            </div>
+          </div>
+            
+          
+        </div>
+      </div>
+    </form>
+
+
+
+
+
+
+
+  </div>
+</div>
+<script type="text/javascript">
+  function check(check_type){
+    if(check_type == 'check_main_data'){
+      uncheckAll();
+      
+      var items = [
+        'model',
+        'category',
+        'name',
+        'description',
+        'manufacturer',
+        'price',
+		'images',
+        'quantity',
+        'status',
+        'tax_class',
+      ];
+      
+      $.each(items, function( index, item ) {
+        $('#download_'+item).prop('checked',true);
+      });
+      
+    }
+  
+    if(check_type == 'check_all_important_data'){
+      uncheckAll();
+      
+      var items = [
+        'model',
+        'category',
+        'name',
+        'description',
+        'manufacturer',
+        'price',
+		'images',
+        'quantity',
+        'status',
+        'tax_class',
+		'product_option',
+      ];
+      
+      $.each(items, function( index, item ) {
+        $('#download_'+item).prop('checked',true);
+      });
+      
+      
+      
+    }
+    if(check_type == 'check_all'){checkAll();}
+    if(check_type == 'check_none'){uncheckAll();}
+    highlightCheckbox();
+  }
+
+  function uncheckAll(){
+    $('#items input[type=checkbox]').prop("checked", false);
+  }
+
+  function checkAll(){
+    $('#items input[type=checkbox]').prop("checked", true);
+  }
+  
+  function highlightCheckbox(){
+    $("#xml_export input[type=checkbox]").each(function( index ) {
+    
+      var checkbox_id = $(this).attr('id');
+      
+      if($(this).prop("checked") == true){
+        $('label[for='+checkbox_id+']').addClass("highlighted");
+      }else{
+       $('label[for='+checkbox_id+']').removeClass("highlighted");
+      }
+      
+       $('label[for=download_full_image_link]').removeClass("highlighted");
+       $('label[for=download_image_number]').removeClass("highlighted");
+
+    });
+  }
+  
+</script>
+{{ footer }}
